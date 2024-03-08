@@ -1,0 +1,505 @@
+// Sandstorm Item CLI.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+
+
+// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
+// Debug program: F5 or Debug > Start Debugging menu
+
+// Tips for Getting Started: 
+//   1. Use the Solution Explorer window to add/manage files
+//   2. Use the Team Explorer window to connect to source control
+//   3. Use the Output window to see build output and other messages
+//   4. Use the Error List window to view errors
+//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
+//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+
+
+/*
+Reference: Downfall:
+(1167,6666,0,0x4d4d9fac,0,12,0,0,1,0,
+6,666,0,49,1,10946,80,3,1023,4,
+0,0,0,'Downfall',
+'The tainted steel of this evil partizan first seeks the heart of its victim and then destroys the lifeblood found within.',
+0x867ed577,4294967295,
+50,50,0,0,25,0,0,0,0,0,25,0,0,0,0,0,0,0,0,0),
+
+
+Reference: Beheader of Isthiak:
+(5378,6666,0,0xA05728FC,0,12,0,0,1,0,
+2,666,0,49,1,10946,80,3,1023,0,
+0,0,0,'Beheader of Isthiak',
+'The hilt of this malevolent blade has been fashioned from the horns of some unspeakable horror.',
+0x6EB7224D,4294967295,
+50,50,0,0,0,0,25,0,0,0,25,0,0,0,0,0,0,0,0,0)
+
+Reference: Test Output
+(5378,6666,0,0xA05728FC,0,12,0,0,1,0,2,666,0,49,1,10946,80,3,1023,0,0,0,0,'Beheader of Isthiak','The hilt of this malevolent blade has been fashioned from the horns of some unspeakable horror.',0x6EB7224D,4294967295,50,50,0,0,0,0,25,0,0,0,25,0,0,0,0,0,0,0,0,0)
+*/
+
+
+#include <cstdlib>
+#include <iostream>
+#include <string>
+#include <fstream>
+
+using namespace std;
+
+int selection;
+int statsPrompt;
+string item[47];
+
+void welcome() {
+    cout << "----------Sandstorm Item Packet Array Editor--------------------" << endl;
+    cout << "----------Programmed by Sigrid \"Siri\" Svartvatn-----------------" << endl;
+    cout << "------Romenadan of Marr's Fist & Siriella of Sandstorm----------" << endl;
+    cout << "-----------Long Live EverQuest Online Adventures!---------------" << endl;
+    cout << "------------------Version 1.0 March 2024------------------------" << endl << endl << endl;
+    cout << "This tool is for editing the Packet Byte Arrays of in-Game Items" << endl;
+    cout << "which may be directly entered in the item database by the Admin." << endl << endl << endl;
+}
+
+
+void outputArray() {
+    cout << "\n\nThe Item's Packet Array is: " << endl;
+    cout << "(";
+    for (int i = 0; i < 47; i++) {
+        cout << item[i];
+        if (i < 46) { cout << ","; }
+    };
+    cout << ")" << endl << endl;
+}
+
+
+void itemInitialization() {
+    //  item string array default contents
+    item[0] = "9999"; // ItemID
+    item[1] = "9999"; // Itemcost
+    item[2] = "0"; // UNK1
+    item[3] = "0"; // Icon
+    item[4] = "0"; // UNK2
+    item[5] = "-1"; // EquipSlot
+    item[6] = "0"; // UNK3
+    item[7] = "1"; // Trade
+    item[8] = "1"; // Rent
+    item[9] = "0"; // UNK4
+    item[10] = "0"; // AtkType
+    item[11] = "0"; // WeaponDmg
+    item[12] = "0"; // UNK5
+    item[13] = "1"; // LevelReq
+    item[14] = "1"; // MaxStack
+    item[15] = "9999"; // ItemHP
+    item[16] = "50"; // Durability
+    item[17] = "32767"; // itemClass
+    item[18] = "1023"; // itemRace
+    item[19] = "0"; // Procanim/magic-item
+    item[20] = "0"; // Lore
+    item[21] = "0"; // UNK6
+    item[22] = "0"; // Craft
+    item[23] = "Item Name"; // ItemName
+    item[24] = "Item Description"; // Description
+    item[25] = "0"; // Model
+    item[26] = "4294967295"; // Color-Value
+    item[27] = "0"; // Str
+    item[28] = "0"; // Sta
+    item[29] = "0"; // Agi
+    item[30] = "0"; // Wis
+    item[31] = "0"; // Dex
+    item[32] = "0"; // Cha
+    item[33] = "0"; // Int
+    item[34] = "0"; // HPMax
+    item[35] = "0"; // PowMax
+    item[36] = "0"; // PoT
+    item[37] = "0"; // HoT
+    item[38] = "0"; // AC
+    item[39] = "0"; // PR
+    item[40] = "0"; // DR
+    item[41] = "0"; // FR
+    item[42] = "0"; // CR
+    item[43] = "0"; // LR
+    item[44] = "0"; // AR
+    item[45] = "0"; // Range
+    item[46] = "0"; // FishingSkill
+}
+
+
+void itemBaseCollect() {
+    string ItemID;
+    cout << "Please enter the item's Sandstorm item-database ID number \"####\"\n";
+    cin >> ItemID;
+    cout << "the item's ID number is: " << ItemID << " \n\n";
+    item[0] = ItemID;
+
+
+    string ItemCost;
+    cout << "Please enter the item's cost in Tunar.\n";
+    cin >> ItemCost;
+    cout << "the item's cost is: " << ItemCost << " \n\n";
+    item[1] = ItemCost;
+
+
+    string Icon;
+    cout << "Please enter the item's icon address in Hex \"0x########\".\n";
+    cin >> Icon;
+    cout << "the item's icon's Hex address is: " << Icon << " \n\n";
+    item[3] = Icon;
+
+
+    string EquipSlot;
+    cout << "Please enter the item's EquipSlot Code.\n";
+    cout << "Equip Slot Codes: \n";
+    cout << "NotEquipped  = -1 \n";
+    cout << "Head         = 1 \n";
+    cout << "Robe         = 2 \n";
+    cout << "Earring      = 3 \n";
+    cout << "Neck         = 4 \n";
+    cout << "Chest        = 5 \n";
+    cout << "Forearm      = 6 \n";
+    cout << "TwoForearm   = 7 \n";
+    cout << "Ring         = 8 \n";
+    cout << "Belt         = 9 \n";
+    cout << "Leg          = 10 \n";
+    cout << "Feet         = 11 \n";
+    cout << "Primary      = 12 \n";
+    cout << "Shield       = 13 \n";
+    cout << "Secondary    = 14 \n";
+    cout << "TwoHand      = 15 \n";
+    cout << "Bow          = 16 \n";
+    cout << "Thrown       = 17 \n";
+    cout << "Held         = 18 \n";
+    cout << "Hand         = 19 \n";
+    cout << "Fishing      = 20 \n";
+    cout << "Bait         = 21 \n";
+    cout << "WeaponCraft  = 22 \n";
+    cout << "ArmorCraft   = 23 \n";
+    cout << "JewlerCraft  = 24 \n";
+    cout << "Carpentry    = 25 \n";
+    cout << "Alchemy      = 26 \n";
+    cin >> EquipSlot;
+    cout << "the item's EquipSlot Code is: " << EquipSlot << " \n\n";
+    item[5] = EquipSlot;
+
+
+    string Trade;
+    cout << "Please enter the item's Trade Status in Boolean.\n";
+    cout << "No Trade = 0, Tradeable = 1\n";
+    cin >> Trade;
+    cout << "the item's Boolean Trade Status is: " << Trade << " \n\n";
+    item[7] = Trade;
+
+
+    string Rent;
+    cout << "Please enter the item's Rent Status in Boolean.\n";
+    cout << "No Rent = 0, Rent = 1\n";
+    cin >> Rent;
+    cout << "the item's Boolean Rent Status is: " << Rent << " \n\n";
+    item[8] = Rent;
+
+
+    string AtkType;
+    cout << "Please enter the item's Attack Type Code.\n";
+    cout << "Attack Type: \n";
+    cout << "Held Item = 0 \n";
+    cout << "1h Slash  = 1 \n";
+    cout << "2h Slash  = 2 \n";
+    cout << "1h Blunt  = 3 \n";
+    cout << "2h Blunt  = 4 \n";
+    cout << "1h Pierce = 5 \n";
+    cout << "2h Pierce = 6 \n";
+    cout << "Bow       = 7 \n";
+    cout << "Fist      = 8 \n";
+    cout << "Crossbow  = 9 \n";
+    cout << "Thrown Potion = 0A \n";
+    cin >> AtkType;
+    cout << "the item's Attack Type Code is: " << AtkType << " \n\n";
+    item[10] = AtkType;
+
+
+    string WeaponDmg;
+    cout << "Please enter the item's Weapon Damage if it is a weapon.\n";
+    cout << "Please enter 0 for Held Item or Non-Weapon Item.\n";
+    cin >> WeaponDmg;
+    cout << "the item's Weapon Damage is: " << WeaponDmg << " \n\n";
+    item[11] = WeaponDmg;
+
+
+    string LevelReq;
+    cout << "Please enter the item's Required Level.\n";
+    cin >> LevelReq;
+    cout << "the item's Required Level is: " << LevelReq << " \n\n";
+    item[13] = LevelReq;
+
+
+    string MaxStack;
+    cout << "Please enter the item's Max Stack Count.\n";
+    cin >> MaxStack;
+    cout << "the item's Max Stack Count is: " << MaxStack << " \n\n";
+    item[14] = MaxStack;
+
+
+    string ItemHP;
+    cout << "Please enter the item's Item HP aka \"Full Durability Points\".\n";
+    cin >> ItemHP;
+    cout << "the item's Item-HP is: " << ItemHP << " \n\n";
+    item[15] = ItemHP;
+
+
+    string Durability;
+    cout << "Please enter the item's Durability value.\n";
+    cin >> Durability;
+    cout << "the item's Durability is: " << Durability << " \n\n";
+    item[16] = Durability;
+
+
+    string itemClass;
+    cout << "Please enter the item's Allowed-Classes Code.\n";
+    cout << "Allowed-Classes Codes: \n";
+    cout << "WAR = 0 \n";
+    cout << "RAN = 1 \n";
+    cout << "PAL = 2 \n";
+    cout << "SK  = 3 \n";
+    cout << "MNK = 4 \n";
+    cout << "BRD = 5 \n";
+    cout << "RGE = 6 \n";
+    cout << "DRD = 7 \n";
+    cout << "SHA = 8 \n";
+    cout << "CL  = 9 \n";
+    cout << "MAG = 10 \n";
+    cout << "NEC = 11 \n";
+    cout << "ENC = 12 \n";
+    cout << "WIZ = 13 \n";
+    cout << "ALC = 14 \n";
+    cout << "ALC, MNK = A08002 \n";
+    cout << "WAR, RAN = 06 \n";
+    cout << "PAL, CL  = 8808 \n";
+    cout << "BRD, RGE = CC001 \n";
+    cout << "RAN, BRD, RGE = C401 \n";
+    cout << "WAR, PAL, SK  = 1A \n";
+    cout << "DRD, SHA, CL  = 800E \n";
+    cout << "WAR, PAL, SK, CL  = 9A08 \n";
+    cout << "MAG, NEC, ENC, WIZ, ALC = 80F003 \n";
+    cout << "WAR, RAN, PAL, SK, MNK, BRD, RGE = FE01 \n";
+    cout << "DRD, SHA, CL, MAG, NEC, ENC, WIZ, ALC = 80FE03 \n";
+    cout << "All = 32767 \n";
+    cin >> itemClass;
+    cout << "the item's Allowed-Classes Code is: " << itemClass << " \n\n";
+    item[17] = itemClass;
+
+
+    string itemRace;
+    cout << "Please enter the item's Allowed Races Code.\n";
+    cout << "Allowed Races Codes: \n";
+    cout << "HUM  = 0 \n";
+    cout << "ELF  = 1 \n";
+    cout << "DELF = 2 \n";
+    cout << "GNO  = 3 \n";
+    cout << "DWF  = 4 \n";
+    cout << "TRL  = 5 \n";
+    cout << "BAR  = 6 \n";
+    cout << "HLF  = 7 \n";
+    cout << "ERU  = 8 \n";
+    cout << "OGR  = 9 \n";
+    cout << "All  = 1023 \n";
+    cin >> itemRace;
+    cout << "the item's Allowed Races Code is: " << itemRace << " \n\n";
+    item[18] = itemRace;
+
+
+    string Lore;
+    cout << "Please enter the item's LORE Status in Boolean.\n";
+    cout << "No LORE = 0, LORE = 1\n";
+    cin >> Lore;
+    cout << "the item's Boolean LORE Status is: " << Lore << " \n\n";
+    item[20] = Lore;
+
+
+    string Craft;
+    cout << "Please enter the item's Crafting Status in Boolean.\n";
+    cout << "No Craft = 0, Craft = 1\n";
+    cin >> Craft;
+    cout << "the item's Boolean Crafting Status is: " << Craft << " \n\n";
+    item[22] = Craft;
+
+    string singlequote = "\'";
+
+    string ItemName;
+    redoname:
+    cout << "Please enter the item's name: \n";
+    getline(cin, ItemName);
+    if (ItemName == "") { goto redoname; }
+    ItemName = singlequote + ItemName;
+    ItemName = ItemName + singlequote;
+    cout << "the item's name is: " << ItemName << " \n\n";
+    item[23] = ItemName;
+
+
+    string itemDescription;
+    redodesc:
+    cout << "Please enter the item's description: \n";
+    getline(cin, itemDescription);
+    if (ItemName == "") { goto redodesc; }
+    itemDescription = singlequote + itemDescription;
+    itemDescription = itemDescription + singlequote;
+    cout << "\nthe item's description is: \n" << itemDescription << " \n\n";
+    item[24] = itemDescription; 
+
+
+    string Model;
+    cout << "Please enter the item's Model's Hex Address.\n";
+    cin >> Model;
+    cout << "the item's Model is: " << Model << " \n\n";
+    item[25] = Model;
+
+
+    string Range;
+    cout << "Please enter the item's Range.\n";
+    cin >> Range;
+    cout << "the item's Range is: " << Range << " \n\n";
+    item[45] = Range;
+
+
+    string Fish;
+    cout << "Please enter the item's Fishing Skill Bonus.\n";
+    cin >> Fish;
+    cout << "the item's Fishing Skill Bonus is: " << Fish << " \n\n";
+    item[46] = Fish;
+}
+
+
+void itemStatsCollect() {
+    cout << "\nPlease Enter Stats As Prompted.." << endl;
+
+    cout << "\nSTR?" << endl;
+    string Strength;
+    cin >> Strength;
+    cout << "STR = " << Strength << endl;
+    item[27] = Strength;
+
+    cout << "\nSTA?" << endl;
+    string Stamina;
+    cin >> Stamina;
+    cout << "STA = " << Stamina << endl;
+    item[28] = Stamina;
+
+    cout << "\nAGI?" << endl;
+    string Agility;
+    cin >> Agility;
+    cout << "AGI = " << Agility << endl;
+    item[29] = Agility;
+
+    cout << "\nWIS?" << endl;
+    string Wisdom;
+    cin >> Wisdom;
+    cout << "WIS = " << Wisdom << endl;
+    item[30] = Wisdom;
+
+    cout << "\nDEX?" << endl;
+    string Dexterity;
+    cin >> Dexterity;
+    cout << "DEX = " << Dexterity << endl;
+    item[31] = Dexterity;
+
+    cout << "\nCHA?" << endl;
+    string Charisma;
+    cin >> Charisma;
+    cout << "CHA = " << Charisma << endl;
+    item[32] = Charisma;
+
+    cout << "\nINT?" << endl;
+    string Intelligence;
+    cin >> Intelligence;
+    cout << "INT = " << Intelligence << endl;
+    item[33] = Intelligence;
+
+    cout << "\nHPMax?" << endl;
+    string HPMax;
+    cin >> HPMax;
+    cout << "HPMax = " << HPMax << endl;
+    item[34] = HPMax;
+
+    cout << "\nPowMax?" << endl;
+    string PowMax;
+    cin >> PowMax;
+    cout << "PowMax = " << PowMax << endl;
+    item[35] = PowMax;
+
+    cout << "\nPoT?" << endl;
+    string PowTime;
+    cin >> PowTime;
+    cout << "PoT = " << PowTime << endl;
+    item[36] = PowTime;
+
+    cout << "\nHoT?" << endl;
+    string HoTime;
+    cin >> HoTime;
+    cout << "HoT = " << HoTime << endl;
+    item[37] = HoTime;
+
+    cout << "\nAC?" << endl;
+    string Armor;
+    cin >> Armor;
+    cout << "AC = " << Armor << endl;
+    item[38] = Armor;
+
+    cout << "\nPR?" << endl;
+    string Poison;
+    cin >> Poison;
+    cout << "PR = " << Poison << endl;
+    item[39] = Poison;
+
+    cout << "\nDR?" << endl;
+    string Disease;
+    cin >> Disease;
+    cout << "DR = " << Disease << endl;
+    item[40] = Disease;
+
+    cout << "\nFR?" << endl;
+    string Fire;
+    cin >> Fire;
+    cout << "FR = " << Fire << endl;
+    item[41] = Fire;
+
+    cout << "\nCR?" << endl;
+    string Cold;
+    cin >> Cold;
+    cout << "CR = " << Cold << endl;
+    item[42] = Cold;
+
+    cout << "\nLR?" << endl;
+    string Lightning;
+    cin >> Lightning;
+    cout << "DR = " << Lightning << endl;
+    item[43] = Lightning;
+
+    cout << "\nAR?" << endl;
+    string Arcane;
+    cin >> Arcane;
+    cout << "AR = " << Arcane << endl;
+    item[44] = Arcane;
+
+    outputArray();
+}
+
+
+void itemStatsPrompt() {
+    cout << "\n\nDo you wish to add Stats to this item?" << endl;
+    cout << "0) No" << endl;
+    cout << "1) Yes" << endl;
+    cin >> statsPrompt;
+    if (statsPrompt == 1) {
+        itemStatsCollect();
+    }
+    if (statsPrompt == 0) {
+        outputArray();
+    }
+}
+
+
+int main() {
+    welcome();
+    itemInitialization();
+    itemBaseCollect(); 
+    itemStatsPrompt();
+    system("pause");
+    main();
+}
+
